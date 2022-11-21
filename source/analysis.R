@@ -1,5 +1,5 @@
 library(tidyverse)
-
+library(ggplot2)
 # The functions might be useful for A4
 source("../source/a4-helpers.R")
 
@@ -29,16 +29,21 @@ test_query2 <- function(num=6) {
 # Your functions might go here ... <todo:  update comment>
 #----------------------------------------------------------------------------#
 # This function ... <todo:  update comment>
+data <- get_data()
 get_year_jail_pop <- function() {
-  # TODO: Implement this function 
-return()   
+  df <- data %>%
+    select(year, total_pop)
+return(df)   
 }
-
+pop_data <- get_year_jail_pop()
 # This function ... <todo:  update comment>
 plot_jail_pop_for_us <- function()  {
-  # TODO: Implement this function 
-  return()   
+  vis <- ggplot(data = data) + 
+    geom_col(mapping = aes(x = year, y = total_pop))
+  return(vis)   
 } 
+chart <- plot_jail_pop_for_us()
+chart
 
 ## Section 4  ---- 
 #----------------------------------------------------------------------------#
