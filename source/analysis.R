@@ -19,50 +19,71 @@ test_query2 <- function(num=6) {
   return(v)
 }
 data <- get_data()
+#View(data)
+
+
 ## Section 2  ---- 
 #----------------------------------------------------------------------------#
 # Your functions and variables might go here ... <todo: update comment>
 #----------------------------------------------------------------------------#
-avg_black_jail_rate <- data %>%
+black_jail_rate_avg <- function(){ 
+  rate <- data %>%
   filter(year == 2018) %>%
   pull(black_jail_pop_rate) %>%
   mean( na.rm = TRUE)
-avg_black_jail_rate <- avg_black_jail_rate/ 100
-avg_black_jail_rate
-
+  rate <- rate/ 100
+  return(rate)
+}
+black_jail_rate_avg()
 #
-highest_black_jail_rate_state <- data %>%
+highest_black_jail_rate_state <- function(){
+  state <-data %>% 
   filter(year == 2018) %>%
   group_by(state) %>%
   summarise(black_jail_rate = mean(black_jail_pop_rate, na.rm = TRUE)) %>%
   na.omit %>%
   filter(black_jail_rate == max(black_jail_rate))%>%
   pull(state)
+  return(state)
+}
+highest_black_jail_rate_state()
 
-highest_black_jail_rate<- data %>%
+highest_black_jail_rate<- function() { 
+  rate <- data %>%
   filter(year == 2018) %>%
   group_by(state) %>%
   summarise(black_jail_rate = mean(black_jail_pop_rate, na.rm = TRUE)) %>%
   na.omit %>%
   filter(black_jail_rate == max(black_jail_rate))%>%
   pull(black_jail_rate)
-highest_black_jail_rate
+  rate <- rate/ 100 
+  return(rate)
+}
+highest_black_jail_rate()
 
 
-avg_white_jail_rate <- data %>%
-  filter(year == 2018) %>%
-  pull(white_jail_pop_rate) %>%
-  mean( na.rm = TRUE)
-avg_white_jail_rate <- avg_black_jail_rate / 100
+white_jail_rate_avg <- function(){
+  rate <- data %>%
+    filter(year == 2018) %>%
+    pull(white_jail_pop_rate) %>%
+    mean( na.rm = TRUE)
+  rate <- rate / 100
+  return(rate)
+}
+white_jail_rate_avg()
 
-utah_white_jail_rate <- data %>%
+utah_white_jail_rate <- function(){
+  rate <- data %>%
   filter(year == 2018) %>%
   group_by(state) %>%
   summarise(white_jail_rate = mean(white_jail_pop_rate, na.rm = TRUE)) %>%
   na.omit %>%
   filter(state == "UT")%>%
   pull(white_jail_rate)
-utah_white_jail_rate
+  rate <- rate / 100
+  return(rate)
+}  
+utah_white_jail_rate()
 
 ## Section 3  ---- 
 #----------------------------------------------------------------------------#
@@ -74,14 +95,19 @@ utah_white_jail_rate
 #View(data)
 get_year_jail_pop <- function() {
   df <- data %>%
-    select(year, total_pop)
+    select(year, total_jail_pop)
 return(df)   
 }
 pop_data <- get_year_jail_pop()
 # This function ... <todo:  update comment>
 plot_jail_pop_for_us <- function()  {
   vis <- ggplot(data = data) + 
-    geom_col(mapping = aes(x = year, y = total_pop))
+    geom_col(mapping = aes(x = year, y = total_jail_pop)) + labs(
+      title = "United States Jail Population (1970 - 2018)",
+      caption = "The graph shows that over the last several decades, the prison population has been greatly increasing.",
+      x = "Year",
+      y = "Jail Population (per person)"
+    )
   return(vis)   
 } 
 chart <- plot_jail_pop_for_us()
@@ -106,10 +132,15 @@ Wa <- get_jail_pop_by_states(c("WA", "OR"))
 
 plot_jail_by_states <- function(states){
   chart <- ggplot(get_jail_pop_by_states(states)) +
-    geom_line(mapping = aes(x = year, y = jail_pop, color= state))
+    geom_line(mapping = aes(x = year, y = jail_pop, color= state))+ labs(
+      title = "United States Jail Population in States (1970 - 2018)",
+      caption = "The graph shows that over the last several decades, the prison population has been greatly increasing in states throughout the country.",
+      x = "Year",
+      y = "Jail Population (per person)"
+    )
   return(chart)
 }
-WaChart <- plot_jail_by_states(c("WA", "OR"))
+WaChart <- plot_jail_by_states(c("NY", "CA", "FL"))
 WaChart
 ## Section 5  ---- 
 #----------------------------------------------------------------------------#
@@ -165,18 +196,9 @@ state_names_fix <- state_names %>%
     abbrev = tolower(abbrev),
     code = tolower(code)
   )
-View(state_names_fix)
 
 # 
-  state_shape <- map_data("state")
-  ggplot(state_shape) +
-    geom_polygon(
-      mapping = aes(x = long, y = lat, group = group),
-      color = "white",
-      size = .1
-    ) +
-    coord_map()
-  return(state_shape)
+
 
 
 black_jail_2018 <- function(){
@@ -184,14 +206,14 @@ black_jail_2018 <- function(){
     select(year, state, black_jail_pop_rate)%>%
     filter(year == 2018)%>%
     group_by(state)%>%
-    summarise(total_black_jail_pop = mean(black_jail_pop_rate, na.rm = TRUE))%>%
+    summarise(avg_black_jail_pop_rate = mean(black_jail_pop_rate, na.rm = TRUE))%>%
 #    na.omit()%>%
     mutate(state = tolower(state))
   
   colnames(jail2018)[1] = "code"
   jail2018_combined <- right_join(jail2018, state_names_fix, by = "code") %>%
   subset(select = c(1,3,2,4))%>%
-  select(state, total_black_jail_pop) %>%
+  select(state, avg_black_jail_pop_rate) %>%
   na.omit()
   
   return(jail2018_combined)
@@ -203,13 +225,14 @@ state_map_data <- function(){
     left_join(black_jail_2018(), by = "state")
   map_vis <- ggplot(state_shape) +
     geom_polygon(
-      mapping = aes (x = long, y = lat, group = group, fill = total_black_jail_pop),
+      mapping = aes (x = long, y = lat, group = group, fill = avg_black_jail_pop_rate),
       color = "white",
       size = .1
     ) +
     coord_map() +
     scale_fill_continuous(low = "#132B43", high = "Red") +
-    labs(fill = "Black Jail Rate per .01") 
+    labs(fill = "Black Jail Rate per .01",
+         title = "The Black Jail Population rate") 
   return(map_vis)
 }
 

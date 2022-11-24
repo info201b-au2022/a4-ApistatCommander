@@ -1,6 +1,6 @@
 ---
-title: "Your A4 Report Title (TODO: Revise title)"
-author: "Your Name"
+title: "The Inequality of Law Enforcement towards the Black Population"
+author: "Andy Nguyen"
 date: '2022-11-01'
 output: html_document
 ---
@@ -11,34 +11,33 @@ source("../source/analysis.R")
 ```
 
 ## Abstract 
-[TODO: Include a short abstract (about 50 words)]
-
-# Test (TODO: Remove before submission!!)
-```{r echo=FALSE}
-q1_string <- test_query1()
-num <- 5
-```
-As you know, this is a markdown report. The [R Markdown Cheatsheet](https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf) is **useful!**
-
-* Here's a test of a dynamic variable. Say **"`r q1_string`!!!** 
-* Here's another test. A vector
-of numbers: `r test_query2(num)`.
-
-Recall that _{r echo=TRUE}_ can be used to display the code, 
-which is very useful when developing and debugging a report. Here's an example: 
-
-```{r echo=TRUE}
-num <- 5
-sum <- sum(test_query2(num))
-print(sum)
-```
+In this report, I will discuss the injustices that many Black people face regarding being sentenced to jail over the last several decades. The data shows that Black people are more likely to be targeted by law enforcement and be sent to jail. Further, I will also show that Black People are targeted more often in certain states of the country than others. 	
 
 ## Introduction 
-[TODO]
+The United States has a mass incarceration and policing problem. Many low-level behaviors are often criminalized, and many people who commit these behaviors and are then incarcerated are often people of color. In particular, Black people are often victims and are unjustifiably arrested.  In fact, despite making up 13% of the population, Black men make up 35% of the prison population. Through this data, we are able to bring change. This data can be used by policymakers to help people of color by reforming law enforcement and helping marginalized communities. Further, members of marginalized communities can use this data to help organize their communities and urge people to fight for change. This data set can affect people who work in law enforcement because through this data, reforms towards law enforcement can be made. In turn, new methods can be made to ensure the protection of marginalized groups from law enforcement. Through this data, we can help create a more just and equal future. 
+
 ## Data Summary 
-[TODO]
 
-[TODO ... other sections ... See Canvas for details]
+In 2018, the average rate the Black People are jailed at was `r black_jail_rate_avg()`, while the average rate in which White people were jailed was `r white_jail_rate_avg()`. Further, in the same year, `r highest_black_jail_rate_state()` (Utah) had the highest average  jail rate for Black people of `r highest_black_jail_rate()` while the average jail rate for White people was only `r `white_jail_rate_avg()`. This shows that within the same state, Black people are targeted more greatly than White people. This proves that many Black people are victims of law enforcement. 
 
-_All the very best with your work!_
+##Growth of the US Jail Population
+```{r echo = FALSE}
+plot_jail_by_states(c("CA", "FL", "MA", "TX"))
+```
 
+The graph shows that within these four states, the jail population has been increasing for decades. California has the greatest jail population over the decades with rate continually increasing. This is also happening in Texas and Florida.
+##Jail Rates among Black People and White People
+```{r echo = FALSE}
+race_plot()
+```
+
+How does the jail rate within the Black community differ from the rate within the White community? To answer this, I divided the jail population by the total population of Black people and White People. The plot shows that within the Black community, black people are more likely to go to jail than white people.
+
+This is concerning because the data shows that despite the population of Black people being lower, they are often punished more and sent to jail. This may suggest that within Black communities, which may often be less fortunate, there is greater policing. Therefore, this may further prove the inequality within this country. 
+
+##Map of the jail population rate of Black People 
+```{r echo = FALSE}
+state_map_data()
+```
+
+The map asks shows how high the jail population rate of Black people within each state? It is evident that Utah has the highest rate. Further, the map shows that many states as well, still have a fairly high rate of at least 3000. This means that the rate of black populations in jail is about 30%. 
